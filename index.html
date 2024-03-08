@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <title>Pomodoro Timer</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Pomodoro Timer</h1>
+        <div><label for="workDuration">Work Duration (minutes): </label><input type="number" id="workDuration"></div><br><br>
+        <div><label>Break Duration (minutes): </label><input type="number" id="breakDuration"></div><br>
+        <div>
+            <button id="startTimer" onclick="start()">Start Timer</button>
+            <button id="stopTimer" onclick="stop()">Stop Timer</button>
+        </div>
+        <div class="timerDisplayContainer">
+            <div id="timerDisplay">00:00</div>
+            <div id="timerMessage"></div>
+        </div>
+    </div>
+    <script>
+        var workTime;
+        var breakTime;
+        var timerIntervalId;
+        var czas;
+        var isWork;
+
+        function timer(){
+            czas = Math.round((czas - 1) * 100) / 100;
+            displayTime(czas);
+            if(czas <= 0){
+                if(isWork == true){
+                    czas = breakTime;
+                    isWork = false;
+                }
+                else{
+                    czas = workTime;
+                    isWork = true;
+                }
+            }
+        }
+
+        function start(){
+            if(!validateInput()){
+                return;
+            }
+            workTime = document.getElementById("workDuration").value * 60;
+            breakTime = document.getElementById("breakDuration").value * 60;
+            czas = workTime;
+            isWork = true;
+            document.getElementById("startTimer").disabled = true;
+            document.getElementById("stopTimer").disabled = false;
+            timerIntervalId = setInterval(timer, 1000);
+            console.log(workTime, breakTime);
+        }
+
+        function stop(){
+            clearInterval(timerIntervalId);
+            document.getElementById("startTimer").disabled = false;
+            document.getElementById("stopTimer").disabled = true;
+        }
+
+        function displayTime(czas){
+            minutes = Math.floor(czas/60);
+            console.log(minutes);
+            if(minutes < 10){
+                minutes = "0" + minutes;
+            }
+            seconds = czas % 60;
+            if(seconds < 10){
+                seconds = "0" + seconds;
+            }
+            document.getElementById("timerDisplay").innerHTML = minutes + ":" + seconds;
+        }
+
+        function validateInput(){
+            workTime = document.getElementById("workDuration").value;
+            breakTime = document.getElementById("breakDuration").value;
+
+            if(workTime <= 0){
+                return false;
+            }
+            if(breakTime <= 0){
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
